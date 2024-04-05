@@ -26,9 +26,9 @@ export default function Home() {
   const user_info = api.get.getUser.useQuery({ email: user_email });
   let user_name = "";
   let user_category = "";
-  if(user_info.data && user_info.data.name){
-    user_name = user_info.data.name;
-    user_category = user_info.data.selected_categories || "";
+  if(user_info.data){
+    user_name = user_info.data.name ? user_info.data.name : "";
+    user_category = user_info.data.selected_categories ? user_info.data.selected_categories : "";
   }
 
   const match_password = api.get.matchPassword.useQuery({ email: user_email, password: user_password });
