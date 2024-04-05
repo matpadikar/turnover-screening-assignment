@@ -5,7 +5,34 @@ import { api } from "~/utils/api";
 import styles from "./index.module.css";
 
 export default function Home() {
-  const hello = api.post.hello.useQuery({ text: "from tRPC" });
+  const hello = api.get.hello.useQuery({ text: "from ecommerce-app" });
+
+  const page_no = 10;
+  const all_categories = api.get.getCategories.useQuery({ page_no: page_no});
+
+  let all_category_names = "";
+  if(all_categories.data){
+    for(const category of all_categories.data) {
+      all_category_names += category.name + ", ";
+    }
+  }
+
+  const user_email = "mangesh@gatech.edu";
+  const user_password = "password123"; 
+  const wrong_password = "123password";
+  // api.post.createUser.useMutation().mutate({ email: user_email, name: "Mangesh",  password: user_password});
+  // api.post.updateUserCategories.useMutation().mutate({email: user_email, category: "Electronics"});
+
+  const user_info = api.get.getUser.useQuery({ email: user_email });
+  let user_name = "";
+  let user_category = "";
+  if(user_info.data && user_info.data.name){
+    user_name = user_info.data.name;
+    user_category = user_info.data.selected_categories || "";
+  }
+
+  const match_password = api.get.matchPassword.useQuery({ email: user_email, password: user_password });
+  const match_wrong_password = api.get.matchPassword.useQuery({ email: user_email, password: wrong_password });
 
   return (
     <>
@@ -16,7 +43,7 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <div className={styles.container}>
-          <h1 className={styles.title}>
+          {/* <h1 className={styles.title}>
             Create <span className={styles.pinkSpan}>T3</span> App
           </h1>
           <div className={styles.cardRow}>
@@ -42,9 +69,38 @@ export default function Home() {
                 to deploy it.
               </div>
             </Link>
-          </div>
+          </div> */}
           <p className={styles.showcaseText}>
             {hello.data ? hello.data.greeting : "Loading tRPC query..."}
+          </p>
+
+          <p className={styles.showcaseText}>
+            {"getCategories API. Page No = " + page_no + " :"}
+          </p>
+          <p className={styles.showcaseText}>
+            {all_category_names ? all_category_names : "Loading tRPC query..."}
+          </p>
+
+          <p className={styles.showcaseText}>
+            {"getUser API. Email = " + user_email + " :"}
+          </p>
+          <p className={styles.showcaseText}>
+            {(user_name ? user_name : "Loading tRPC query...") + ", "}
+            {user_category ? user_category : "Loading tRPC query..."}
+          </p>
+
+          <p className={styles.showcaseText}>
+            {"matchPassword API. Email = " + user_email + " and Password = " + user_password + " :"}
+          </p>
+          <p className={styles.showcaseText}>
+            {String(match_password.data) ? "Success = " + String(match_password.data) : "Loading tRPC query..."}
+          </p>
+
+          <p className={styles.showcaseText}>
+            {"matchPassword API. Email = " + user_email + " and Password = " + wrong_password + " :"}
+          </p>
+          <p className={styles.showcaseText}>
+            {String(match_wrong_password.data) ? "Success = " + String(match_wrong_password.data) : "Loading tRPC query..."}
           </p>
         </div>
       </main>

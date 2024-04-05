@@ -103,7 +103,7 @@ INSERT INTO category(id, name) VALUES(100, 'Swimming Gear');
 SELECT * FROM category;
 
 
-CREATE TABLE "user"(id SERIAL PRIMARY KEY, email TEXT NOT NULL, name TEXT, selected_categories TEXT);
+CREATE TABLE "user"(id SERIAL PRIMARY KEY, email TEXT NOT NULL UNIQUE, password_hash TEXT NOT NULL, name TEXT, selected_categories TEXT);
 
-CREATE TABLE auth(id SERIAL PRIMARY KEY, password_hash TEXT NOT NULL);
+-- CREATE TABLE auth(id SERIAL PRIMARY KEY, user_id integer REFERENCES "user"(id), password_hash TEXT NOT NULL);
 
