@@ -20,6 +20,22 @@ export const postRouter = createTRPCRouter({
       });
     }),
 
+  matchPassword: publicProcedure
+    .input(z.object({ email: z.string().min(3), password: z.string().min(1)}))
+    .mutation(async ({ ctx, input }) => {
+      const user_info = await ctx.db.user.findFirstOrThrow ({
+        where: { email: input.email },
+      });
+
+      const is_success = await bcrypt.compare(input.password, user_info.password_hash);
+
+      if (!is_success) {
+        throw new Error("Invalid password");
+      }
+
+      return is_success;
+    }),
+
   updateUserCategories: publicProcedure
     .input(z.object({ email: z.string().min(3), category: z.string()}))
     .mutation(async ({ ctx, input }) => {
